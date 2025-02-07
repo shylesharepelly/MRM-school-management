@@ -656,7 +656,7 @@ def upload_file():
                         
 
         except json.JSONDecodeError as e:
-            return jsonify({"error": f"Error parsing JSON content: {str(e)}"})
+            return jsonify({"error": f"Error parsing JSON content: {str(e)} , Go to Edit Questions section and Enter the subjects and standards for uploaded questions"})
 
 
 

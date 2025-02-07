@@ -421,10 +421,10 @@
             
             else {
                 // If there's an error, display the error message
-                responseOutput.innerHTML = `<p class="error">Error: ${result.error}</p>`;
+                responseOutput.innerHTML = `<p class="error">Error: ${result.error} </p>`;
             }
         } catch (error) {
-            document.getElementById('response-output').innerHTML = `<p class="error">Error submitting form because ${error}</p>`;
+            document.getElementById('response-output').innerHTML = `<p class="error">Error submitting form because ${error} , Try to upload file again</p>`;
         }
 
         });

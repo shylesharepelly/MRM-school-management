@@ -240,7 +240,7 @@ def delete_file_by_id(file_id):
     cur = conn.cursor()
 
     # Fetch the file details from the database (including the file path)
-    cur.execute('SELECT  filepath FROM files WHERE id = ?', (file_id))
+    cur.execute('SELECT  filepath FROM files WHERE id = ?', (file_id,))
     result = cur.fetchone()
 
     if result:
