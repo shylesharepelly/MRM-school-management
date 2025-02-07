@@ -168,7 +168,7 @@ def account():
                 'generated_papers_count': questionpapers_count
             }
             # Pass the user_data to the template instead of JSON response
-            return render_template('about.html', user_details=user_data,role=role)
+            return render_template('About.html', user_details=user_data,role=role)
         else:
             return jsonify({'error': 'User not found'}), 404
     except Exception as e:
