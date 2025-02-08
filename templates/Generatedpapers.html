@@ -243,6 +243,24 @@
         
         }
 
+        /* Center the Heading and Download Paper Button */
+        #questions-section h2,
+        #download-paper-btn {
+            text-align: center;  /* Centers text for the heading */
+            margin: 0 auto; /* Centers the button if it's inside a block-level container */
+            display: block; /* Ensures the button and heading are block-level elements */
+        }
+        #questions-section h2 {
+            margin-top: 15px;
+        }
+
+        #download-paper-btn {
+            margin-top: 20px; /* Add space above the button */
+            padding: 10px;
+        }
+        #download-paper-btn:hover {
+            background-color: green;
+        }
   
       
     
@@ -286,8 +304,8 @@
         <a href="/EditQuestions">EditQuestions</a>
         <a href="/GenerateQuestion">Generate Paper</a>
         <a href="/GeneratedPapers">Question Papers</a>
-        <a href="/view_subjects">View Subjects</a>
         <a href="/edit_subjects">Edit Subjects</a>
+        <a href="/view_subjects">Edit Lessons</a>
         <a href = "/rankedquestions">Ranked Questions</a>
         <a href="/attendence">Attendence</a>
         <a href="/classperformance">Class Performance</a>

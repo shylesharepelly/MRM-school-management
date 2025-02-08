@@ -183,6 +183,10 @@
             border: 1px solid #888;
             width: 80%;
             max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers the button horizontally */
+            position: relative; /* Needed to position the close button */
         }
 
         /* The Close Button */
@@ -191,6 +195,9 @@
             float: right;
             font-size: 28px;
             font-weight: bold;
+            position: absolute; /* Position it absolutely */
+            top: 10px; /* Distance from the top */
+            right: 10px; /* Distance from the right */
         }
 
         .close:hover,
@@ -202,6 +209,11 @@
 
         #ok-btn {
             margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #ok-btn:hover {
+            background-color: green;
         }
 
 
@@ -250,8 +262,8 @@
         <a href="/EditQuestions">EditQuestions</a>
         <a href="/GenerateQuestion">Generate Paper</a>
         <a href="/GeneratedPapers">Question Papers</a>
-        <a href="/view_subjects">View Subjects</a>
         <a href="/edit_subjects">Edit Subjects</a>
+        <a href="/view_subjects">Edit Lessons</a>
         <a href = "/rankedquestions">Ranked Questions</a>
         <a href="/attendence">Attendence</a>
         <a href="/classperformance">Class Performance</a>
@@ -271,13 +283,13 @@
 
                 <!-- Question Details Section -->
                 <div class="form-section">
-                    <label for="question">Enter Question:</label>
+                    <label for="question">Enter Question:<span style="color: red;">*</span></label>
                     <input type="text" id="question" name="question" placeholder="Type your question here..." required />
                 </div>
 
                 <!-- Class and Subject Details Section -->
                 <div>
-                    <label for="class">Class Name:</label>
+                    <label for="class">Class Name:<span style="color: red;">*</span></label>
                     <select id="class" name="class" required>
                         <option value="" disabled selected>Select Class</option>
                         <!-- Options for classes 1 to 10 -->
@@ -295,7 +307,7 @@
                 </div>
 
                 <div>
-                    <label for="subject">Subject:</label>
+                    <label for="subject">Subject:<span style="color: red;">*</span></label>
                     <select id="subject" name="subject" required>
                         <option value="" disabled selected>Select Subject</option>
                     </select>
@@ -304,14 +316,14 @@
                 <!-- Lesson and Marks Section -->
 
                 <div>
-                    <label for="lesson">Lesson:</label>
+                    <label for="lesson">Lesson:<span style="color: red;">*</span></label>
                     <select id="lesson" name="lesson" required>
                         <option value="" disabled selected>Select Lesson</option>
                     </select>
                 </div>
 
                 <div>
-                    <label for="assessment">Assessment Type:</label>
+                    <label for="assessment">Assessment Type:<span style="color: red;">*</span></label>
                     <select id="assessment" name="assessment" required>
                         <option value="" disabled selected>Select Assessment Type</option>
                         <!-- Options for assessment types -->
@@ -321,11 +333,11 @@
                 </div>
 
                 <div>
-                    <label for="marks">Marks:</label>
+                    <label for="marks">Marks:<span style="color: red;">*</span></label>
                     <input type="number" id="marks" name="marks" placeholder="Marks" required />
                 </div>
                 <div>
-                    <label for="standard">Select Standard:</label>
+                    <label for="standard">Select Standard:<span style="color: red;">*</span></label>
                     <select id="standard" name="standard" required>
                         <option value="" disabled selected>Select Standard</option>
                         <!-- Options for classes 1 to 10 -->

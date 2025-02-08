@@ -214,7 +214,9 @@
         dialog button:hover {
             background-color: #16a085;
         }
-
+        .username-btn {
+            padding: 4px;
+        }
         /* Close Button */
         .close-btn {
             position: absolute;
@@ -233,8 +235,8 @@
         }
 
            /* Edit Button Style */
-           .edit-btn {
-            padding: 2px;
+        .edit-btn {
+            padding: 4px;
             background-color: #4CAF50;  /* Green */
             color: white;
         }
@@ -245,7 +247,7 @@
 
         /* Delete Button Style */
         .delete-btn {
-            padding: 2px;
+            padding: 4px;
             background-color: #f44336;  /* Red */
             color: white;
         }
@@ -337,8 +339,8 @@
         <a href="/EditQuestions">Edit Questions</a>
         <a href="/GenerateQuestion">Generate Paper</a>
         <a href="/GeneratedPapers">Question Papers</a>
-        <a href="/view_subjects">View Subjects</a>
         <a href="/edit_subjects">Edit Subjects</a>
+        <a href="/view_subjects">Edit Lessons</a>
         <a href = "/rankedquestions">Ranked Questions</a>
         <a href="/attendence">Attendence</a>
         <a href="/classperformance">Class Performance</a>
@@ -383,22 +385,22 @@
                 <button class="close-btn" onclick="closeDialog()">X</button>
                 <h2>Add New User</h2>
                 <form id="addUserForm">
-                    <label for="username">Username:</label>
+                    <label for="username">Username:<span style="color: red;">*</span></label>
                     <input type="text" id="username" name="username" required>
-                    <label for="password">Password:</label>
+                    <label for="password">Password:<span style="color: red;">*</span></label>
                     <input type="text" id="password" name="password" required>
-                    <label for="role">Role:</label>
+                    <label for="role">Role:<span style="color: red;">*</span></label>
                     <select id="role" name="role" required>
                         <option value="teacher">Teacher</option>
                         <option value="admin">Admin</option>
                     </select>
-                    <label for="designation">Designation:</label>
+                    <label for="designation">Designation:<span style="color: red;">*</span></label>
                     <input type="text" id="designation" name="designation" required>
 
-                    <label for="qualification">Qualification:</label>
+                    <label for="qualification">Qualification:<span style="color: red;">*</span></label>
                     <input type="text" id="qualification" name="qualification" required>
 
-                    <label for="classTeacher">Class Teacher:</label>
+                    <label for="classTeacher">Class Teacher:<span style="color: red;">*</span></label>
                     <input type="text" id="classTeacher" name="classTeacher" required>
                     <button type="submit">Add User</button>
                 </form>
@@ -531,15 +533,19 @@
                 // Fetch all users from the backend
                 const response = await fetch('/get_teachers');
                 const users = await response.json();
-                console.log(users)
+                // console.log(users)
                 // Get the table body element
                 const tableBody = document.getElementsByClassName('users-table')[0].getElementsByTagName('tbody')[0];
                 tableBody.innerHTML = '';  // Clear any existing rows
 
                 // Loop through the users and populate the table
-                users.forEach(user => {
+                users.forEach((user,index) => {
                     const row = document.createElement('tr');
                     row.setAttribute('data-id', user.id); // Set the data-id attribute to identify the user
+
+                     // Check if it's the first row (index 0) to exclude the delete button
+                    const deleteButton = index === 0 ? '' : `<button onclick="deleteUser(${user.id})" class="delete-btn">Delete</button>`;
+
 
                     row.innerHTML = `
                         <td><button class="username-btn" onclick="viewUserDetails(${user.id})">${user.username}</button></td>
@@ -549,7 +555,7 @@
                         <td>${user.qualification}</td>
                         <td>${user.class_teacher}</td>
                         <td> <button onclick="editUser(${user.id})" class="edit-btn">Edit</button> </td>
-                        <td><button onclick="deleteUser(${user.id})" class="delete-btn">Delete</button> </td>
+                        <td>${deleteButton}</td>
                     `;
                     tableBody.appendChild(row);
                 });

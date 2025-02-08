@@ -53,6 +53,11 @@ ALLOWED_EXTENSIONS1 = {'csv'}
 app.config['EXCELUPLOAD_FOLDER'] = EXCELUPLOAD_FOLDER
 app.secret_key = 'your_secret_key'
 
+from datetime import timedelta
+# Set session timeout
+app.permanent_session_lifetime = timedelta(minutes=15)  # Auto logout after 30 minutes
+
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS1
 
@@ -75,7 +80,10 @@ def allowed_file(filename):
 def require_login():
     # Exclude the login route from this check
     if 'user_id' not in session and request.endpoint not in ['login', 'static']:
+        session.clear()  # Clear session if expired
         return redirect(url_for('login'))
+    if 'user_id' in session:  # If user is logged in
+        session.modified = True  # Reset session timer on user activity
     
 
 
@@ -88,7 +96,9 @@ def login():
         try:
             user = get_user_by_username(username)  # Use the function from db.py
             print(user)
+            print(datetime)
             if user and user[2] == password:  # Direct password comparison
+                session.permanent = True  # Makes session expire based on the set timeout
                 session['user_id'] = user[0]
                 session['username'] = user[1]
                 session['role'] = user[3]

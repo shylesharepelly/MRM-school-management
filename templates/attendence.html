@@ -165,8 +165,8 @@
         <a href="/EditQuestions">Edit Questions</a>
         <a href="/GenerateQuestion">Generate Paper</a>
         <a href="/GeneratedPapers">Question Papers</a>
-        <a href="/view_subjects">View Subjects</a>
         <a href="/edit_subjects">Edit Subjects</a>
+        <a href="/view_subjects">Edit Lessons</a>
         <a href = "/rankedquestions">Ranked Questions</a>
         <a href="/attendence">Attendence</a>
         <a href="/classperformance">Class Performance</a>
@@ -184,7 +184,7 @@
         <div class="container">
             <h1>Attendance Tracker</h1>
             <form method="POST" enctype="multipart/form-data">
-                <label for="months">Select number of months to track:</label>
+                <label for="months">Select number of months to track:<span style="color: red;">*</span></label>
                 <select id="months" name="months" required onchange="adjustFileInputs()">
                     <option value="">--Select Months--</option>
                     {% for i in range(1, 13) %}

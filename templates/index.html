@@ -295,8 +295,8 @@
         <a href="/GenerateQuestion">Generate Paper</a>
         <a href="/GeneratedPapers">Question Papers</a>
         <a href = "/rankedquestions">Ranked Questions</a>
-        <a href="/view_subjects">View Subjects</a>
         <a href="/edit_subjects">Edit Subjects</a>
+        <a href="/view_subjects">Edit Lessons</a>
         <a href="/attendence">Attendence</a>
         <a href="/classperformance">Class Performance</a>
         {% if role == 'admin' %}
@@ -315,7 +315,7 @@
             <h1>MRM School Question Bank</h1>
             <div class="upload-form">
                 <form id="file-form" enctype="multipart/form-data">
-                    <label for="file">* Upload a file: </label>
+                    <label for="file"> Upload a Question Paper: <span style="color: red;">*</span></label>
                     <input type="file" id="file" name="file" accept=".csv, .xlsx, .docx, .pdf, .png, .jpeg, .jpg" required>
                     
                     <button type="submit">Submit</button>
