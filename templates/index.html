@@ -34,7 +34,9 @@
             top: 0;
             left: 0;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
         }
+    
 
         .sidebar h2 {
             color: white;
@@ -251,19 +253,71 @@
             margin-top: 20px;
         }
 
+        .sidebar.active {
+            transform: translateX(0);
+        }
+        .hamburger-menu {
+            display: none;
+            font-size: 40px;
+            color: #2c3e50;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+        }
+
+
+
+        /* Close Button Styling */
+        .closebutton {
+            display: none;
+           
+            top: 15px;
+            left: 20px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .sidebar.active .closebutton {
+            display: block;
+        }
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .main-container {
                 margin-left: 0;
+                margin-top: 30px;
+                padding: 15px; /* Reduce padding for mobile screens */
+                padding-top: 30px;
             }
 
             .sidebar {
                 width: 100%;
                 height: auto;
-                position: relative;
+                position: absolute;
+                top: 0;
+                left: -100%;
                 padding: 10px 20px;
                 box-shadow: none;
+            }
+
+            .hamburger-menu {
+                display: block;
+                font-size: 40px;
+                cursor: pointer;
+            }
+
+            .closebutton {
+                display: none;
+            }
+
+            .sidebar.active {
+                transform: translateX(100%);
+            }
+            .sidebar.active .closebutton {
+                display: block;
             }
 
             .sidebar a {
@@ -272,6 +326,7 @@
 
             .container {
                 padding: 20px;
+                width: 100%; /* Full width on mobile */
             }
 
             h1 {
@@ -281,14 +336,51 @@
             .upload-form button {
                 font-size: 16px;
             }
+
+            /* Adjusting input fields */
+            .upload-form input[type="file"],
+            .upload-form textarea,
+            .upload-form button {
+                width: 100%;
+                padding: 12px;
+            }
+
+            /* Responsiveness for form elements */
+            .upload-form label {
+                font-size: 16px;
+            }
+
+            .upload-form input[type="file"],
+            .upload-form textarea {
+                font-size: 14px;
+            }
+
+            .response-section h2{
+                
+                font-size: 20px;
+            }
+
+            .response-output p  {
+                font-size: 16px;
+            }
+
+            
         }
+
+
     </style>
 </head>
 
 <body>
 
+     <!-- Hamburger Menu (Visible only on mobile screens) -->
+     <div class="hamburger-menu" id="hamburger-menu">
+        &#9776;
+    </div>
+
     <!-- Sidebar Menu -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
+        <div class="closebutton" id="closebutton">&times;</div>
         <a href="/">Home</a>
         <a href="/AddQuestions">Add Questions</a>
         <a href="/EditQuestions">Edit Questions</a>
@@ -336,6 +428,17 @@
     </div>
 
     <script>
+        document.getElementById('hamburger-menu').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar'); 
+            sidebar.classList.toggle('active');
+            
+        });
+
+        document.getElementById('closebutton').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.remove('active');
+        });
+
         document.getElementById('file-form').addEventListener('submit', async function (event) {
             event.preventDefault();
 

@@ -198,34 +198,135 @@
         }
      
 
-         /* Mobile Responsive */
-         @media (max-width: 768px) {
+      
+        .sidebar.active {
+            transform: translateX(0);
+        }
+        .hamburger-menu {
+            display: none;
+            font-size: 40px;
+            color: #2c3e50;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+        }
+        /* Close Button Styling */
+        .closebutton {
+            display: none;
+           
+            top: 15px;
+            left: 20px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .sidebar.active .closebutton {
+            display: block;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            
+
             .sidebar {
-                width: 200px;
+                width: 100%;
+                height: auto;
+                position: absolute;
+                top: 0;
+                left: -100%;
+                padding: 10px 20px;
+                box-shadow: none;
+            }
+
+            .hamburger-menu {
+                display: block;
+                font-size: 40px;
+                cursor: pointer;
+            }
+
+            .closebutton {
+                display: none;
+            }
+
+            .sidebar.active {
+                transform: translateX(100%);
+            }
+            .sidebar.active .closebutton {
+                display: block;
+            }
+
+            .sidebar a {
+                font-size: 16px;
             }
 
             .main-container {
-                margin-left: 200px;
+                margin-left: 0;
+                margin-top: 30px;
                 padding: 10px;
+                padding-top: 20px;
+                
             }
 
             .container {
-                padding: 20px;
-                width: 100%;
+                padding: 6px;
             }
 
-            #lessons-table th,
-            #lessons-table td {
-                padding: 10px;
+            h1 {
+                font-size: 16px;
             }
 
             .subjects select,
             .subjects input[type="text"],
             .subjects input[type="number"] {
-                width: 100%;
-                margin-bottom: 10px;
+                font-size: 14px;
             }
 
+      
+
+            #lessons-table th,
+            #lessons-table td {
+                font-size: 12px;
+                padding: 10px; /* Reduce padding for smaller screens */
+                text-align: center;
+            }
+
+            /* Edit and Delete Buttons */
+            #lessons-table td button {
+                font-size: 12px;  /* Smaller button font size for mobile */
+                padding: 6px; /* Adjust button padding to fit */
+                width: 100%;  /* Make buttons take full width in the table cell */
+                box-sizing: border-box; /* Ensure buttons stay within their cell */
+            }
+
+
+            .subjects button {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            /* Ensure Edit and Delete buttons are properly sized on mobile */
+            .edit-button {
+                background-color: #3498db;
+                color: white;
+            }
+
+            .edit-button:hover {
+                background-color: #2980b9;
+            }
+
+            .delete-button {
+                background-color: #e74c3c;
+                color: white;
+            }
+
+            .delete-button:hover {
+                background-color: #c0392b;
+            }
+
+          
         }
 
 
@@ -235,8 +336,15 @@
 
 <body>
 
+     <!-- Hamburger Menu (Visible only on mobile screens) -->
+     <div class="hamburger-menu" id="hamburger-menu">
+        &#9776;
+    </div>
+
     <!-- Sidebar Menu -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
+        <div class="closebutton" id="closebutton">&times;</div>
+
         <a href="/">Home</a>
         <a href="/AddQuestions">Add Questions</a>
         <a href="/EditQuestions">Edit Questions</a>
@@ -308,6 +416,18 @@
     </div>
 
     <script>
+        document.getElementById('hamburger-menu').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar'); 
+            sidebar.classList.toggle('active');
+            
+        });
+
+        document.getElementById('closebutton').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.remove('active');
+        });
+
+
         document.getElementById('class').addEventListener('change', async function(event) {
             const classId = event.target.value;
             const subjectSelect = document.getElementById('subject');

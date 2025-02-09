@@ -245,38 +245,267 @@
 
 
 
+        
+        .sidebar.active {
+            transform: translateX(0);
+        }
+        .hamburger-menu {
+            display: none;
+            font-size: 40px;
+            color: #2c3e50;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+        }
+        /* Close Button Styling */
+        .closebutton {
+            display: none;
+           
+            top: 15px;
+            left: 20px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .sidebar.active .closebutton {
+            display: block;
+        }
+
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .main-container {
-                margin-left: 0;
-            }
+        
 
             .sidebar {
                 width: 100%;
                 height: auto;
-                position: relative;
-                padding: 15px 20px;
+                position: absolute;
+                top: 0;
+                left: -100%;
+                padding: 10px 20px;
                 box-shadow: none;
+                z-index: 9999;
+            }
+
+            .hamburger-menu {
+                display: block;
+                font-size: 40px;
+                cursor: pointer;
+            }
+
+            .closebutton {
+                display: none;
+            }
+
+            .sidebar.active {
+                transform: translateX(100%);
+            }
+            .sidebar.active .closebutton {
+                display: block;
             }
 
             .sidebar a {
                 font-size: 16px;
             }
 
-            .container {
-                padding: 25px;
-            }
-
-            h1 {
-                font-size: 26px;
-            }
+            /* Main Container */
+        .main-container {
+            margin-left: 0;
+            margin-top: 30px;
+            padding: 10px;
+            width: 100%;
+           
         }
+
+        .container {
+            padding: 15px;
+            width: 100%;
+            box-sizing: border-box;
+            max-width: 100%;
+            margin: 0;
+            box-shadow: none;
+        }
+
+        h1  {
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        select,
+        input,
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #8c8888;
+            font-size: 16px;
+        }
+
+        select:focus,
+        input:focus {
+            border-color: #1abc9c;
+            outline: none;
+        }
+
+        button {
+            background-color: #2980b9;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3498db;
+            transform: translateY(-2px);
+        }
+
+        button[type="submit"] {
+            background-color: #27ae60;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #2ecc71;
+        }
+
+    /* Chapter List */
+        #chaptersList {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 90%;
+        }
+
+        #chaptersList label {
+            margin-left: 5px;
+            color: #c0392b;
+        }
+
+        #chaptersList input[type="checkbox"] {
+            transform: scale(1.5);
+        }
+
+        /* Sections Container */
+        #sectionsContainer {
+            display: block;
+            margin-top: 30px;
+        }
+
+        .section-row {
+            border: 1px solid #ddd;
+            padding: 5px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .section-box label {
+            font-weight: bold;
+        }
+
+        .section-box select,
+        .section-box input {
+            margin-bottom: 5px;
+            padding: 5px;
+        }
+
+        .section-box button {
+            background-color: #e74c3c;
+            color: white;
+            font-size: 14px;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .section-box button:hover {
+            background-color: #c0392b;
+        }
+
+        #totalQuestions {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            width: 250px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Adjust the standard-container for mobile */
+        .standard-container {
+            margin-top: 15px;
+            padding: 5px;
+            border-radius: 5px;
+            background-color: #ecf0f1;
+        }
+
+        .standard-container label {
+            margin-right: 5px;
+        }
+
+        .standard-container br {
+            margin-bottom: 5px;
+        }
+
+        .standard-wrapper {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 5px;
+        }
+
+        .standard-wrapper label {
+            margin-right: 5px;
+        }
+
+        .standard-wrapper input[type="checkbox"] {
+            transform: scale(1.5);
+            margin-right: 10px;
+        }
+
+          
+        }
+
     </style>
 </head>
 
 <body>
+
+      <!-- Hamburger Menu (Visible only on mobile screens) -->
+      <div class="hamburger-menu" id="hamburger-menu">
+        &#9776;
+    </div>
+
+
+
     <!-- Sidebar Menu -->
-    <div class="sidebar">
+    <div class="sidebar"  id="sidebar">
+        <div class="closebutton" id="closebutton">&times;</div>
+
         <a href="/">Home</a>
         <a href="/AddQuestions">Add Questions</a>
         <a href="/EditQuestions">Edit Questions</a>
@@ -355,6 +584,17 @@
     </div>
 
     <script>
+        document.getElementById('hamburger-menu').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar'); 
+            sidebar.classList.toggle('active');
+            
+        });
+
+        document.getElementById('closebutton').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.remove('active');
+        });
+
         let selectedClass='';
         let selectedSubject='';
         let selectedAssessment='';
@@ -474,7 +714,7 @@
 
             // Create input for number of questions
             const numQuestionsLabel = document.createElement('label');
-            numQuestionsLabel.textContent = 'Number of Questions: ';
+            numQuestionsLabel.textContent = 'Number of Questions:* ';
             const numQuestionsInput = document.createElement('input');
             numQuestionsInput.type = 'number';
             numQuestionsInput.name = 'num_questions';

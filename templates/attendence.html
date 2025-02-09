@@ -154,12 +154,175 @@
         tr:hover {
             background-color: #f5f5f5;
         }
+
+
+
+
+        
+        .sidebar.active {
+            transform: translateX(0);
+        }
+        .hamburger-menu {
+            display: none;
+            font-size: 40px;
+            color: #2c3e50;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+        }
+        /* Close Button Styling */
+        .closebutton {
+            display: none;
+           
+            top: 15px;
+            left: 20px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .sidebar.active .closebutton {
+            display: block;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: absolute;
+                top: 0;
+                left: -100%;
+                padding: 10px 20px;
+                box-shadow: none;
+            }
+
+            .hamburger-menu {
+                display: block;
+                font-size: 40px;
+                cursor: pointer;
+            }
+
+            .closebutton {
+                display: none;
+            }
+
+            .sidebar.active {
+                transform: translateX(100%);
+            }
+            .sidebar.active .closebutton {
+                display: block;
+            }
+
+            .sidebar a {
+                font-size: 16px;
+            }
+            .main-container {
+                margin-left: 0;
+                margin-top: 50px;
+                padding: 5px;
+            }
+
+
+            .container {
+                padding: 10px;
+                width: 90%;
+                max-width: 400px;
+                
+                margin: auto;
+                border-radius: 15px;
+                background-color: #fff;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+            h1 {
+                font-size: 24px;
+            }
+
+            label {
+                    font-size: 16px;
+                    margin-bottom: 10px;
+                }
+
+                select, input[type="file"] {
+                    font-size: 1em;
+                    padding: 10px;
+                    width: 100%;
+                    border-radius: 8px;
+                    border: 1px solid #bdc3c7;
+                    background-color: #ecf0f1;
+                    margin-bottom: 10px;
+                    box-sizing: border-box;
+                }
+
+                button {
+                    font-size: 1em;
+                    padding: 12px 25px;
+                    background-color: #3498db;
+                    color: #fff;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                }
+
+                button:hover {
+                    background-color: #2980b9;
+                }
+
+                .table-container {
+                    margin-top: 20px;
+                    overflow-x: auto;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                }
+
+                th, td {
+                    padding: 12px;
+                    text-align: left;
+                    border-bottom: 1px solid #ecf0f1;
+                    font-size: 0.9em;
+                }
+
+                th {
+                    background-color: #3498db;
+                    color: #fff;
+                }
+
+                tr:hover {
+                    background-color: #f5f5f5;
+                }
+
+                .message {
+                    font-size: 1em;
+                    margin-top: 10px;
+                    color: #7f8c8d;
+                }
+
+                    
+        }
+
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+      <!-- Hamburger Menu (Visible only on mobile screens) -->
+      <div class="hamburger-menu" id="hamburger-menu">
+        &#9776;
+    </div>
+
     <!-- Sidebar Menu -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
+        <div class="closebutton" id="closebutton">&times;</div>
         <a href="/">Home</a>
         <a href="/AddQuestions">Add Questions</a>
         <a href="/EditQuestions">Edit Questions</a>
@@ -222,7 +385,22 @@
             {% endif %}
         </div>
     </div>
+
+
     <script>
+        document.getElementById('hamburger-menu').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar'); 
+            sidebar.classList.toggle('active');
+            
+        });
+
+        document.getElementById('closebutton').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.remove('active');
+        });
+
+
+
         function adjustFileInputs() {
             const months = document.getElementById('months').value;
             const fileInputs = document.getElementById('fileInputs');

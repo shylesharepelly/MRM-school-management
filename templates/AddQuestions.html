@@ -217,46 +217,173 @@
         }
 
 
+      
+
+        
+        .sidebar.active {
+            transform: translateX(0);
+        }
+        .hamburger-menu {
+            display: none;
+            font-size: 40px;
+            color: #2c3e50;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+        }
+        /* Close Button Styling */
+        .closebutton {
+            display: none;
+           
+            top: 15px;
+            left: 20px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .sidebar.active .closebutton {
+            display: block;
+        }
+
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .main-container {
-                margin-left: 0;
-            }
+            
 
             .sidebar {
                 width: 100%;
                 height: auto;
-                position: relative;
+                position: absolute;
+                top: 0;
+                left: -100%;
                 padding: 10px 20px;
                 box-shadow: none;
+            }
+
+            .hamburger-menu {
+                display: block;
+                font-size: 40px;
+                cursor: pointer;
+            }
+
+            .closebutton {
+                display: none;
+            }
+
+            .sidebar.active {
+                transform: translateX(100%);
+            }
+            .sidebar.active .closebutton {
+                display: block;
             }
 
             .sidebar a {
                 font-size: 16px;
             }
 
-            .container {
+            /* Main Container */
+            .main-container {
+                margin-left: 0;
+                margin-top: 30px;
                 padding: 20px;
+                padding-top: 30px;
+                
+            }
+
+            .container {
+                padding: 10px;
+               
             }
 
             h1 {
                 font-size: 24px;
+                text-align: center;
+            }
+
+            /* Form Layout */
+            .upload-form {
+                display: block;
+            }
+
+            .upload-form .form-section {
+                margin-bottom: 15px;
+                
+            }
+
+            .upload-form label {
+                font-size: 14px;
+                
+            }
+
+            .upload-form input[type="file"],
+            .upload-form input[type="text"],
+            .upload-form input[type="number"],
+            .upload-form select {
+                padding: 10px;
+                font-size: 14px;
+                margin-bottom: 15px; /* Added margin below each input field */
             }
 
             .upload-form button {
+                padding: 10px;
+                margin-bottom: 20px;
                 font-size: 16px;
+                margin-top: 10px; /* Added gap above the button */
+                width: 100%; /* Ensure it takes full width on mobile */
+                max-width: 300px; /* Limit the width to prevent it from getting too large */
+                margin-left: auto;
+                margin-right: auto; /* This will center the button */
+                display: block;
             }
 
-            .upload-form {
-                grid-template-columns: 1fr;
+            /* Response Section */
+            .response-section {
+                margin-top: 20px;
+                padding: 15px;
+                font-size: 14px;
             }
+
+            /* Modal */
+            .modal-content {
+                width: 80%;
+                max-width: 400px;
+                padding: 15px;
+            }
+
+            /* Adjust button inside the modal */
+            #ok-btn {
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+
+            /* Adjust input and button focus */
+            .upload-form input[type="file"]:focus,
+            .upload-form input[type="text"]:focus,
+            .upload-form input[type="number"]:focus,
+            .upload-form select:focus {
+                border-color: #1abc9c;
+            }
+
+          
         }
+
+
     </style>
 </head>
 
 <body>
+    
+     <!-- Hamburger Menu (Visible only on mobile screens) -->
+     <div class="hamburger-menu" id="hamburger-menu">
+        &#9776;
+    </div>
+
+
     <!-- Sidebar Menu -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
+        <div class="closebutton" id="closebutton">&times;</div>
         <a href="/">Home</a>
         <a href="/AddQuestions">Add Questions</a>
         <a href="/EditQuestions">EditQuestions</a>
@@ -375,6 +502,16 @@
     </div>
 
     <script>
+           document.getElementById('hamburger-menu').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar'); 
+            sidebar.classList.toggle('active');
+            
+        });
+
+        document.getElementById('closebutton').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.remove('active');
+        });
 
         document.getElementById('class').addEventListener('change', async function(event) {
             const classId = event.target.value;

@@ -306,42 +306,122 @@
 
                 
       
-    
+        
+        .sidebar.active {
+            transform: translateX(0);
+        }
+        .hamburger-menu {
+            display: none;
+            font-size: 40px;
+            color: #2c3e50;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+        }
+        /* Close Button Styling */
+        .closebutton {
+            display: none;
+           
+            top: 15px;
+            left: 20px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .sidebar.active .closebutton {
+            display: block;
+        }
+
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .main-container {
-                margin-left: 0;
-            }
+          
 
             .sidebar {
                 width: 100%;
                 height: auto;
-                position: relative;
+                position: absolute;
+                top: 0;
+                left: -100%;
                 padding: 10px 20px;
                 box-shadow: none;
+            }
+
+            .hamburger-menu {
+                display: block;
+                font-size: 40px;
+                cursor: pointer;
+            }
+
+            .closebutton {
+                display: none;
+            }
+
+            .sidebar.active {
+                transform: translateX(100%);
+            }
+            .sidebar.active .closebutton {
+                display: block;
             }
 
             .sidebar a {
                 font-size: 16px;
             }
 
+            .main-container {
+                margin-left: 0;
+                margin-top: 30px;
+                padding: 10px;
+                padding-top: 20px;
+                width:auto;
+            }
+
+          
             .container {
-                padding: 20px;
+                background-color: white;
+                max-width: 100%;
+                margin: auto;
+                padding: 15px;
+                border-radius: 15px;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                overflow-y: auto;
+                overflow-x: auto;
             }
 
             h1 {
-                font-size: 24px;
+                font-size: 22px;
+            }
+
+            table {
+                background-color: #fff; /* Ensure table background is visible */
+                margin-top: 20px;
+            }
+
+            table th, table td {
+                padding: 10px;
             }
 
          
+
+          
         }
     </style>
 </head>
 
 <body>
+  
+     <!-- Hamburger Menu (Visible only on mobile screens) -->
+     <div class="hamburger-menu" id="hamburger-menu">
+        &#9776;
+    </div>
+
 
     <!-- Sidebar Menu -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
+        <div class="closebutton" id="closebutton">&times;</div>
+
         <a href="/">Home</a>
         <a href="/AddQuestions">Add Questions</a>
         <a href="/EditQuestions">EditQuestions</a>
@@ -516,7 +596,16 @@
 
 
     <script>
-      
+          document.getElementById('hamburger-menu').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar'); 
+            sidebar.classList.toggle('active');
+            
+        });
+
+        document.getElementById('closebutton').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.remove('active');
+        });
 
       let currentQuestionId = null;
 

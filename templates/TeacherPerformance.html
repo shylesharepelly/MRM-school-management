@@ -138,11 +138,128 @@ table th {
     color: red;
 }
 
+
+.sidebar.active {
+            transform: translateX(0);
+        }
+        .hamburger-menu {
+            display: none;
+            font-size: 40px;
+            color: #2c3e50;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+        }
+        /* Close Button Styling */
+        .closebutton {
+            display: none;
+           
+            top: 15px;
+            left: 20px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .sidebar.active .closebutton {
+            display: block;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: absolute;
+                top: 0;
+                left: -100%;
+                padding: 10px 20px;
+                box-shadow: none;
+            }
+
+            .hamburger-menu {
+                display: block;
+                font-size: 40px;
+                cursor: pointer;
+            }
+
+            .closebutton {
+                display: none;
+            }
+
+            .sidebar.active {
+                transform: translateX(100%);
+            }
+            .sidebar.active .closebutton {
+                display: block;
+            }
+
+            .sidebar a {
+                font-size: 16px;
+            }
+
+            .main-container {
+                margin-left: 0;
+                margin-top: 30px;
+            }
+
+
+       
+            h1 {
+                font-size: 24px;
+            }
+
+            /* Table responsiveness */
+            table {
+                font-size: 14px;
+                width: 100%;
+                overflow-x: auto;
+                display: block; /* Ensures scroll for wide content */
+            }
+
+            table th, table td {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 15px;
+                overflow-x: auto;
+            }
+
+            /* Error message padding */
+            .error {
+                padding: 10px;
+                background-color: #f8d7da;
+                color: #721c24;
+                border-radius: 5px;
+                margin-top: 20px;
+            }
+
+            img {
+            width: 100%;
+            height: auto;
+            max-width: 400px;  /* Ensure it doesn't stretch beyond a reasonable size */
+            display: block;
+            margin: 0 auto;
+        }
+
+          
+        }
+
 </style>
 <body>
+     <!-- Hamburger Menu (Visible only on mobile screens) -->
+     <div class="hamburger-menu" id="hamburger-menu">
+        &#9776;
+    </div>
 
 <!-- Sidebar Menu -->
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
+    <div class="closebutton" id="closebutton">&times;</div>
+
     <a href="/">Home</a>
     <a href="/AddQuestions">Add Questions</a>
     <a href="/EditQuestions">Edit Questions</a>
@@ -210,5 +327,18 @@ table th {
             {% endif %}
         </div>
     </div>
+
 </body>
+<script>
+    document.getElementById('hamburger-menu').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar'); 
+            sidebar.classList.toggle('active');
+            
+        });
+
+        document.getElementById('closebutton').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.remove('active');
+        });
+</script>
 </html>
