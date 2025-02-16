@@ -542,6 +542,13 @@ def fetch_chapters():
     chapters = get_chapters(selected_class, selected_subject)
     return jsonify(chapters)
 
+
+
+import concurrent.futures
+from concurrent.futures import ThreadPoolExecutor
+
+
+
 # Route for uploading files 
 @app.route('/upload', methods=['POST'])
 @role_required(['admin', 'teacher'])
@@ -612,12 +619,38 @@ def upload_file():
             # Print the resulting JSON object
             # print(json_obj)
 
-
+            insert_tasks = []
+            with ThreadPoolExecutor(max_workers=4) as executor:  # Use 5 worker threads
             # Check if the JSON data is a list (array) or a dictionary (object)
-            if isinstance(json_obj, list):
-                # Case: JSON data is a list (array) of sections (first case)
-                for section in json_obj:
-                    for section,details in section.items():
+
+                if isinstance(json_obj, list):
+                    # Case: JSON data is a list (array) of sections (first case)
+                    for section in json_obj:
+                        for section,details in section.items():
+                            subject1=details['subject']
+                            class1=details['class']
+                            # class1=None
+                            marks1=details['marks']
+                            assessment_type=details['assessment']
+
+                            # If any of these values are missing, prompt the user for input
+                            if not (subject1 and class1 and assessment_type):
+                                delete_file_by_id(file_id)
+                                return jsonify({
+                                    "error": "Missing values",
+                                    "message": "Please provide class, subject, and assessment type."
+                                })
+                            
+                            for question in details['questions']:
+                                # insert_question_to_main_db(class1, subject1, assessment_type, marks1, question, file_id)
+                                insert_tasks.append(
+                                    executor.submit(insert_question_to_main_db, class1, subject1, assessment_type, marks1, question, file_id)
+                                )
+                    
+                                
+                elif isinstance(json_obj, dict):
+                    # Case: JSON data is a dictionary (object) with named sections (second case)
+                    for section,details in json_obj.items():
                         subject1=details['subject']
                         class1=details['class']
                         # class1=None
@@ -633,37 +666,21 @@ def upload_file():
                             })
                         
                         for question in details['questions']:
-                            insert_question_to_main_db(class1, subject1, assessment_type, marks1, question, file_id)
+                            # insert_question_to_main_db(class1, subject1, assessment_type, marks1, question, file_id)
+                            insert_tasks.append(
+                                executor.submit(insert_question_to_main_db, class1, subject1, assessment_type, marks1, question, file_id)
+                            )
 
-                assign_chapters(file_id,class1, subject1)
-                classify_questions(file_id)
+                # Wait for all insertions to complete
+            concurrent.futures.wait(insert_tasks)
+
+            # Run heavy functions in background threads
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                executor.submit(assign_chapters, file_id, class1, subject1)
+                executor.submit(classify_questions, file_id)
+
+                num_question = return_count(file_id)
                             
-
-            elif isinstance(json_obj, dict):
-                # Case: JSON data is a dictionary (object) with named sections (second case)
-                for section,details in json_obj.items():
-                    subject1=details['subject']
-                    class1=details['class']
-                    # class1=None
-                    marks1=details['marks']
-                    assessment_type=details['assessment']
-
-                    # If any of these values are missing, prompt the user for input
-                    if not (subject1 and class1 and assessment_type):
-                        delete_file_by_id(file_id)
-                        return jsonify({
-                            "error": "Missing values",
-                            "message": "Please provide class, subject, and assessment type."
-                        })
-                    
-                    for question in details['questions']:
-                        insert_question_to_main_db(class1, subject1, assessment_type, marks1, question, file_id)
-
-                assign_chapters(file_id,class1, subject1)
-                classify_questions(file_id)
-
-            num_question = return_count(file_id)
-                        
 
         except json.JSONDecodeError as e:
             return jsonify({"error": f"Error parsing JSON content: {str(e)} , Go to Edit Questions section and Enter the subjects and standards for uploaded questions"})
