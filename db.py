@@ -102,7 +102,7 @@ def init_main_database():
 def add_admin_user():
     conn = sqlite3.connect('main.db')
     cur = conn.cursor()
-# Check if the admin user already exists
+    # Check if the admin user already exists
     cur.execute('SELECT COUNT(*) FROM users WHERE username = ?', ('admin',))
     admin_count = cur.fetchone()[0]
     
@@ -119,7 +119,7 @@ def add_admin_user():
 def return_count(fileid):
     conn = sqlite3.connect('main.db')
     cur = conn.cursor()
-# Check if the admin user already exists
+    # Check if the admin user already exists
     cur.execute('''SELECT COUNT(*) FROM questions WHERE file_id = ?''', (fileid,))
     question_count = cur.fetchone()[0]
 

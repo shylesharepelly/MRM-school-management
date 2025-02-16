@@ -21,20 +21,63 @@ import base64
 import random
 # from db2 import init_subjects
 from docx.shared import Inches
-
+import google.api_core.exceptions  # ✅ Import this for proper exception handling
 import PyPDF2
 # from db1 import get_dropdown , get_questions_from_db , rank_questions_by_sentence_transformer , rank_questions_with_bert
 
 
 
 
-# Configure Gemini API
-GOOGLE_API_KEY = 'AIzaSyDvpbV34TFp2hGXWF5Hl9zONjlKeKoAuv8'
-genai.configure(api_key=GOOGLE_API_KEY)
-# model = genai.GenerativeModel('gemini-pro')
+# # Configure Gemini API
+# GOOGLE_API_KEY = 'AIzaSyDvpbV34TFp2hGXWF5Hl9zONjlKeKoAuv8'
+# genai.configure(api_key=GOOGLE_API_KEY)
+# # model = genai.GenerativeModel('gemini-pro')
 
-# Initialize the model (Gemini)
+# # Initialize the model (Gemini)
+# model = genai.GenerativeModel('gemini-1.5-flash')
+
+# List of API keys
+API_KEYS = [
+    'AIzaSyDvpbV34TFp2hGXWF5Hl9zONjlKeKoAuv8',
+    'AIzaSyDhJfidnxBuUbHRo9suvX_nQUCHrqwqzAI',
+    'AIzaSyB3Giz0lqT72uwivTH2ee5e6obNEZMpQd4',
+    'AIzaSyCAhUtQo8_SoeDuwRuUpgIaIapBxK8uTIc',
+    'AIzaSyATs_JN_vRbeWI0P2TGCaTCon5AWRAY_ys',
+    'AIzaSyAOUt8Yirbs6BfOTxYDlf4TkKfdWAPovpw'
+]
+
+# Current API key index
+current_key_index = 0
+total_attempts = 0  # Track how many times we've looped through all API keys
+
+
+def configure_gemini():
+    """Configure the Gemini API with the current API key."""
+    global current_key_index
+    genai.configure(api_key=API_KEYS[current_key_index])
+
+# Initialize with the first API key
+configure_gemini()
 model = genai.GenerativeModel('gemini-1.5-flash')
+
+
+def switch_api_key():
+    """Switch to the next available API key when the limit is reached."""
+    global current_key_index, total_attempts
+
+    if current_key_index < len(API_KEYS) - 1:
+        current_key_index += 1
+    else:
+        total_attempts += 1  # Track full cycles
+        if total_attempts >= 2:  # If we've tried all APIs twice, raise an error
+            raise Exception("All API keys have reached their limits. Please wait or add more keys.")
+        current_key_index = 0  # Restart from the first API key
+
+    configure_gemini()  # Reconfigure with the new API key
+    print(f"Switched to API Key {current_key_index + 1}")
+
+
+
 
 app = Flask(__name__)
 
@@ -507,33 +550,6 @@ def replace_question(question_id):
 
 
 
-# @app.route('/generatepaper1', methods=['POST'])
-# def handle_form_submission():
-#     # Retrieve form data
- 
-#     data = request.get_json()  #
-#     selected_class = data.get('class')
-#     selected_subject = data.get('subject')
-#     selected_assessment = data.get('assessment')
-#     selected_chapters = data.get('chapters')
-#     sections = data.get('sections')
-
-#     # Log or process the received data
-#     print(f"Class: {selected_class}")
-#     print(f"Subject: {selected_subject}")
-#     print(f"Assessment Type: {selected_assessment}")
-#     print(f"Selected Chapters: {selected_chapters}")
-#     print(f"Sections: {sections}")
-
-#     # print(data)
-
-#     # Example: Return a success response
-#     return jsonify({
-#         'message': 'Form submitted successfully'
-        
-#     })
-
-
 @app.route('/chapters', methods=['POST'])
 @role_required(['admin', 'teacher'])
 def fetch_chapters():
@@ -974,7 +990,7 @@ def edit_question(question_id):
     'marks': updated_data['marks'],
     'question_text': updated_data['question_text'],
     'diagram': diagram_path  # Pass the diagram path if it exists
-})
+    })
     return jsonify({'success': True}), 200
 
 
@@ -1031,48 +1047,70 @@ def update_questions():
         return jsonify({"message": "Question added successfully."}), 200
 
 def pdf_to_text(file_path):
-    sample_file = genai.upload_file(path=file_path, display_name="pdf1")
+    global model
 
-    print(f"Uploaded file '{sample_file.display_name}' as: {sample_file.uri}")
+    while True:  # Keep retrying until a valid response is received
+        try:
+            sample_file = genai.upload_file(path=file_path, display_name="pdf1")
 
-    
-    
-    response = model.generate_content([
-        sample_file,
-        "I need you to extract and list the questions from each section of the provided PDF document. For each section, you should output a JSON object like this ***mandatory format***: for example like this: { \"section-1\": {\"questions\": [\"question1\", \"question2\"], \"subject\": \"Mathematics\", \"class\": \"10\", \"marks\": \"2\",\"assessment\": \"summative\"}}. For each section, the subject, class in digital number not roman number , assessment and marks for each question not total marks should be provided, if any value not available in pdf return None. If the questions are multiple-choice, include the options within the question like this: A) option1 B) option2 C) option3 D) option4. The output must strictly follow this format for each section, and it should be in JSON format.For part-B include it as section-n in the output and dont include part-A in output , include sections of Part-A" ,
+            print(f"Uploaded file '{sample_file.display_name}' as: {sample_file.uri}")    
+            response = model.generate_content([
+                sample_file,
+                "I need you to extract and list the questions from each section of the provided PDF document. For each section, you should output a JSON object like this ***mandatory format***: for example like this: { \"section-1\": {\"questions\": [\"question1\", \"question2\"], \"subject\": \"Mathematics\", \"class\": \"10\", \"marks\": \"2\",\"assessment\": \"summative\"}}. For each section, the subject, class in digital number not roman number , assessment and marks for each question not total marks should be provided, if any value not available in pdf return None. If the questions are multiple-choice, include the options within the question like this: A) option1 B) option2 C) option3 D) option4. The output must strictly follow this format for each section, and it should be in JSON format.For part-B include it as section-n in the output and dont include part-A in output , include sections of Part-A" ,
+            ])
 
-        
-    ])
+            # Print the generated content
+            # print(response.text)
+            return response.text
 
-    # Print the generated content
-    # print(response.text)
+        except google.api_core.exceptions.ResourceExhausted as e:
+            print("⚠️ Rate limit exceeded. Trying next API key...")
+            switch_api_key()  # Move to next API key
+            model = genai.GenerativeModel("gemini-1.5-flash")  # Reset model
+            time.sleep(2)  # Small delay before retrying
 
-    return response.text
+        except Exception as e:
+            print(f"❌ Unexpected error: {e}")
+            raise e  # Raise other errors
+
+
 
 def assign_chapters_to_questions(questions_list, chapter_list,user_class):
-   
-    prompt = """
-    I have a list of questions and a list of chapters from a specific class. I need you to assign the most relevant chapter name from the provided chapter list to each question. 
-    this is class:  `""" + str(user_class) + """` , Here are the chapters: `""" + str(chapter_list) + """` , Here are the questions: `""" + str(questions_list) + """`, 
-    For each question, analyze its content and context to determine the best matching chapter from the chapter list. The assigned chapter must be one of the provided chapters. Do not create or suggest new chapters.
-    The output should be a JSON object in the following format:
-      [
-        {
-            "id": "1",
-            "question": "question1",
-            "chapter": "Chapter Name"
-        },
-        {
-            "id": "2",
-            "question": "question2",
-            "chapter": "Chapter Name"
-        }
-    ]  
+    global model
 
-    """
+    while True:  # Keep retrying until a valid response is received
+        try:
+            prompt = """
+            I have a list of questions and a list of chapters from a specific class. I need you to assign the most relevant chapter name from the provided chapter list to each question. 
+            this is class:  `""" + str(user_class) + """` , Here are the chapters: `""" + str(chapter_list) + """` , Here are the questions: `""" + str(questions_list) + """`, 
+            For each question, analyze its content and context to determine the best matching chapter from the chapter list. The assigned chapter must be one of the provided chapters. Do not create or suggest new chapters.
+            The output should be a JSON object in the following format:
+            [
+                {
+                    "id": "1",
+                    "question": "question1",
+                    "chapter": "Chapter Name"
+                },
+                {
+                    "id": "2",
+                    "question": "question2",
+                    "chapter": "Chapter Name"
+                }
+            ]  
 
-    response = model.generate_content([prompt])
-    return response.text
+            """
+            response = model.generate_content([prompt])
+            return response.text
+
+        except google.api_core.exceptions.ResourceExhausted as e:
+            print("⚠️ Rate limit exceeded. Trying next API key...")
+            switch_api_key()  # Move to next API key
+            model = genai.GenerativeModel("gemini-1.5-flash")  # Reset model
+            time.sleep(2)  # Small delay before retrying
+
+        except Exception as e:
+            print(f"❌ Unexpected error: {e}")
+            raise e  # Raise other errors
 
 
 def assign_chapters(file_id ,user_class, subject):
@@ -1111,29 +1149,43 @@ def assign_chapters(file_id ,user_class, subject):
         insert_chapters_to_main_db(question_id,question_text,chapter_name)
 
 def classify_questions_to_academic_standards(questions_list, academic_standards):
-    prompt = f"""
-    I have a list of questions and a list of academic standards. I need you to classify each question into the most relevant academic standard based on its content. 
-    Here are the academic standards: {academic_standards}
-    Here are the questions: {questions_list}
-    For each question, analyze its content and context to determine the best matching academic standard from the list. Give only L1,L2,L3,L4,L5, dont give full name. 
-    The output should be a JSON object must be in the following format:
-    [
-        {{
-            "id": "1",
-            "question": "question1",
-            "academic_standard": "L1"
-        }},
-        {{
-            "id": "2",
-            "question": "question2",
-            "academic_standard": "L2"
-        }}
-    ]
-    """
-    
-    response = model.generate_content([prompt])
-    # print("Raw response:", response.text)  # Debugging step
-    return response.text
+    global model
+
+    while True:  # Keep retrying until a valid response is received
+        try:
+            prompt = f"""
+            I have a list of questions and a list of academic standards. I need you to classify each question into the most relevant academic standard based on its content. 
+            Here are the academic standards: {academic_standards}
+            Here are the questions: {questions_list}
+            For each question, analyze its content and context to determine the best matching academic standard from the list. Give only L1,L2,L3,L4,L5, dont give full name. 
+            The output should be a JSON object must be in the following format:
+            [
+                {{
+                    "id": "1",
+                    "question": "question1",
+                    "academic_standard": "L1"
+                }},
+                {{
+                    "id": "2",
+                    "question": "question2",
+                    "academic_standard": "L2"
+                }}
+            ]
+            """
+            
+            response = model.generate_content([prompt])
+            # print("Raw response:", response.text)  # Debugging step
+            return response.text
+
+        except google.api_core.exceptions.ResourceExhausted as e:
+            print("⚠️ Rate limit exceeded. Trying next API key...")
+            switch_api_key()  # Move to next API key
+            model = genai.GenerativeModel("gemini-1.5-flash")  # Reset model
+            time.sleep(2)  # Small delay before retrying
+
+        except Exception as e:
+            print(f"❌ Unexpected error: {e}")
+            raise e  # Raise other errors
 
 def classify_questions(file_id):
     # List of academic standards

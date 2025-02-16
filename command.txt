@@ -1,0 +1,15 @@
+gunicorn --workers=2 --worker-class=gevent --timeout 120 --bind 0.0.0.0:5000 app:app 
+
+
+#start command
+nohup gunicorn --workers=2 --worker-class=gevent --timeout 120 --bind 0.0.0.0:5000 app:app > app.log 2>&1 &
+
+#check logs 
+tail -f app.log
+
+#check process
+ps aux | grep gunicorn
+
+#kill process
+pkill gunicorn
+
