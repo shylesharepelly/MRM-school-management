@@ -23,7 +23,7 @@ import random
 from docx.shared import Inches
 import google.api_core.exceptions  # ✅ Import this for proper exception handling
 import PyPDF2
-# from db1 import get_dropdown , get_questions_from_db , rank_questions_by_sentence_transformer , rank_questions_with_bert
+from db1 import get_dropdown , get_questions_from_db , rank_questions_by_sentence_transformer , rank_questions_with_bert
 
 
 
@@ -173,27 +173,27 @@ def role_required(allowed_roles):
 
 
 
-# @app.route("/rankedquestions", methods=["GET", "POST"])
-# def RankedQuestions():
-#     classes, subjects = get_dropdown()
-#     ranked_questions = []
-#     query_ranked_questions = []
+@app.route("/rankedquestions", methods=["GET", "POST"])
+def RankedQuestions():
+    classes, subjects = get_dropdown()
+    ranked_questions = []
+    query_ranked_questions = []
 
-#     if request.method == "POST":
-#         selected_class = request.form.get("class")
-#         selected_subject = request.form.get("subject")
-#         query_text = request.form.get("query_text")
+    if request.method == "POST":
+        selected_class = request.form.get("class")
+        selected_subject = request.form.get("subject")
+        query_text = request.form.get("query_text")
 
-#         questions, available_columns = get_questions_from_db()
-#         filtered_questions = [q for q in questions if q[available_columns.index("class")] == selected_class and q[available_columns.index("subject")] == selected_subject]
+        questions, available_columns = get_questions_from_db()
+        filtered_questions = [q for q in questions if q[available_columns.index("class")] == selected_class and q[available_columns.index("subject")] == selected_subject]
 
-#         if filtered_questions:
-#             ranked_questions = rank_questions_by_sentence_transformer(filtered_questions, available_columns)
+        if filtered_questions:
+            ranked_questions = rank_questions_by_sentence_transformer(filtered_questions, available_columns)
 
-#         if query_text:
-#             query_ranked_questions = rank_questions_with_bert(query_text)
+        if query_text:
+            query_ranked_questions = rank_questions_with_bert(query_text)
 
-#     return render_template("RankedQuestions.html", classes=classes, subjects=subjects, ranked_questions=ranked_questions, query_ranked_questions=query_ranked_questions)
+    return render_template("RankedQuestions.html", classes=classes, subjects=subjects, ranked_questions=ranked_questions, query_ranked_questions=query_ranked_questions)
 
 
 
