@@ -58,7 +58,7 @@ def configure_gemini():
 
 # Initialize with the first API key
 configure_gemini()
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-2.0-flash')
 
 
 def switch_api_key():
