@@ -693,7 +693,9 @@ def upload_file():
             # Run heavy functions in background threads
             with ThreadPoolExecutor(max_workers=2) as executor:
                 executor.submit(assign_chapters, file_id, class1, subject1)
+                print("assigned chapters")
                 executor.submit(classify_questions, file_id)
+                print("classified questions")
 
                 num_question = return_count(file_id)
                             

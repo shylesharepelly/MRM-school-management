@@ -595,7 +595,7 @@
                     <input type="text" id="editUsername" name="username" required>
 
                     <label for="editPassword">Password:</label>
-                    <input type="password" id="editPassword" name="password" required>
+                    <input type="text" id="editPassword" name="password" required>
 
                     <label for="editRole">Role:</label>
                     <select id="editRole" name="role" required>
@@ -630,7 +630,7 @@
                     
                     <div class="card">
                          <label for="viewPassword" class="card-title">Password:</label>
-                        <input type="text" id="viewPassword" name="password" class="card-content" disabled>
+                        <input type="password" id="viewPassword" name="password" class="card-content" disabled>
                     </div>
                 </div>
 
@@ -737,7 +737,7 @@
 
                     row.innerHTML = `
                         <td><button class="username-btn" onclick="viewUserDetails(${user.id})">${user.username}</button></td>
-                        <td>${user.password}</td>
+                        <td> <input type="password"  value="${user.password}"disabled /></td>
                         <td>${user.role}</td>
                         <td>${user.designation}</td>
                         <td>${user.qualification}</td>

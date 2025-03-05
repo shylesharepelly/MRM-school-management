@@ -1,6 +1,9 @@
 gunicorn --workers=2 --worker-class=gevent --timeout 120 --bind 0.0.0.0:5000 app:app 
 
 
+#before start update subject on new database creation
+python db2.py
+
 #start command
 nohup gunicorn --workers=2 --worker-class=gevent --timeout 120 --bind 0.0.0.0:5000 app:app > app.log 2>&1 &
 

@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Account Details</title>
+    <head>
+        <!-- Add Font Awesome CDN link for icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    </head>
+    
     <!-- Include Google Fonts for a better font style -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -260,7 +265,14 @@
                 
                 <div class="card">
                     <div class="card-title">Password</div>
-                    <div class="card-content">{{ user_details.password }}</div> <!-- You might want to avoid displaying passwords directly -->
+                    <!-- <div class="card-content">{{ user_details.password }}</div> You might want to avoid displaying passwords directly -->
+                    <div class="card-content">
+                        <!-- Password input field -->
+                        <input type="password" id="password" value="{{ user_details.password }}" readonly />
+                
+                        <!-- Eye icon to toggle password visibility -->
+                        <i id="toggle-password" class="fas fa-eye" style="cursor: pointer; margin-left: 10px;"></i>
+                    </div>
                 </div>
             </div>
 
@@ -329,5 +341,23 @@
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.remove('active');
         });
+
+    // Add event listener for the eye icon
+    document.getElementById('toggle-password').addEventListener('click', function() {
+        const passwordField = document.getElementById('password');
+        const icon = document.getElementById('toggle-password');
+
+        // Check current type of the password field (password or text)
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text'; // Change to text to show password
+            icon.classList.remove('fa-eye');  // Change to 'fa-eye-slash' for eye-slash icon
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password'; // Change back to password type
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');  // Show the eye icon again
+        }
+    });
+
 </script>
 </html>

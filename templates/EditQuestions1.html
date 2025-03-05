@@ -84,7 +84,7 @@
             font-weight: 600;
         }
 
-                /* Edit and Delete Button Styling */
+        /* Edit and Delete Button Styling */
         .edit-btn,
         .delete-btn {
             padding: 8px 16px;
@@ -922,6 +922,18 @@
                 formData.append('diagram', diagramFile);
             }
 
+            const updatedQuestion = {
+                id: currentQuestionId,
+                class: document.getElementById('edit-class').value,
+                subject: document.getElementById('edit-subject').value,
+                chapter: document.getElementById('edit-lesson').value,
+                assessment: document.getElementById('edit-assessment').value,
+                marks: document.getElementById('edit-marks').value,
+                standard: document.getElementById('edit-standard').value,
+                question_text: document.getElementById('edit-question-text').value,
+                diagram: diagramFile ? URL.createObjectURL(diagramFile) : null  // Create a temporary URL for the diagram if it's uploaded
+            };
+
 
             try {
                 // Call the backend API to update the question
@@ -933,8 +945,29 @@
                 const result = await response.json();
                 if (result.success) {
                     // Refresh the question list
-                    // await getQuestionsBasedOnUserid(); 
-                    window.location.reload(); // Reload the page
+                    // Now we can update the row in the table using the updatedQuestion data
+                    const row = document.querySelector(`#questions-table tbody tr[data-id="${currentQuestionId}"]`);
+                    if (row) {
+                        // Update the row with the new data
+                        row.innerHTML = `
+                            <td>${updatedQuestion.id}</td>
+                            <td>${updatedQuestion.class}</td>
+                            <td>${updatedQuestion.subject}</td>
+                            <td>${updatedQuestion.assessment}</td>
+                            <td>${updatedQuestion.marks}</td>
+                            <td>${updatedQuestion.question_text}</td>
+                            <td>
+                                ${updatedQuestion.diagram ? `<img src="${updatedQuestion.diagram}" alt="Diagram" style="max-width: 100px; max-height: 100px;"/>` : 'No diagram'}
+                            </td>
+                            <td><button onclick="editQuestion(${updatedQuestion.id})" class="edit-btn">Edit</button></td>
+                            <td><button onclick="deleteQuestion(${updatedQuestion.id})" class="delete-btn">Delete</button></td>
+                        `;
+                    }
+                    else {
+                        window.location.reload(); // Reload the page
+                    
+                    }
+
                     alert('Question updated successfully!');
                     closeEditModal();
                 } else {
