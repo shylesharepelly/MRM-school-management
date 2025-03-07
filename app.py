@@ -576,6 +576,8 @@ def upload_file():
         return jsonify({"error": "No file  provided"})
 
     file = request.files['file']
+    assessment_type = request.form.get('assessment-type')
+    #print(assessment_type)
 
  
     if file and allowed_file(file.filename):
@@ -647,7 +649,7 @@ def upload_file():
                             class1=details['class']
                             # class1=None
                             marks1=details['marks']
-                            assessment_type=details['assessment']
+                            
 
                             # If any of these values are missing, prompt the user for input
                             if not (subject1 and class1 and assessment_type):
@@ -671,7 +673,7 @@ def upload_file():
                         class1=details['class']
                         # class1=None
                         marks1=details['marks']
-                        assessment_type=details['assessment']
+                       
 
                         # If any of these values are missing, prompt the user for input
                         if not (subject1 and class1 and assessment_type):

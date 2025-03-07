@@ -235,7 +235,38 @@
                 width: 50px;
                 height: 50px;
                 animation: spin 2s linear infinite;
-            }
+        }
+
+        /* Styling for the Assessment Type Dropdown */
+        .upload-form select {
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            font-size: 16px;
+            width: 100%;
+            transition: border-color 0.3s ease;
+            background-color: #fff;
+        }
+
+        .upload-form select:focus {
+            border-color: #1abc9c;
+            outline: none;
+        }
+
+        .upload-form select option {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        /* You can also add custom styling for the label of the assessment type */
+        .upload-form label[for="assessment-type"] {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+            display: block;
+        }
+
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -408,6 +439,14 @@
             <h1>MRM School Question Bank</h1>
             <div class="upload-form">
                 <form id="file-form" enctype="multipart/form-data">
+
+                    <label for="assessment-type">Assessment Type: <span style="color: red;">*</span> </label>
+                        <select id="assessment-type" name="assessment-type" required>
+                            <option value="summative">Summative</option>
+                            <option value="formative">Formative</option>
+                        </select>
+
+
                     <label for="file"> Upload a Question Paper: <span style="color: red;">*</span></label>
                     <input type="file" id="file" name="file" accept=".csv, .xlsx, .docx, .pdf, .png, .jpeg, .jpg" required>
                     
@@ -468,7 +507,7 @@
                     <p><strong>Number of Questions:</strong> ${result.count}</p>
                 `;
             }
-            else if (result.error === "Missing values") {
+            else if (result.error == "Missing values") {
                 // If there are missing values, show a new form
                 responseOutput.innerHTML = `
                     <p><strong>Error:</strong> ${result.message}</p>
