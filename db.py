@@ -599,9 +599,6 @@ def get_all_questions_based_on_paperid_from_main_db(paper_id):
     return all_question
 
 
-
-
-
 # Function to update the question in the database
 def replace_question_in_db(question_id, updated_data):
     conn = sqlite3.connect('main.db')
@@ -772,3 +769,25 @@ def delete_subject_from_db(class_name,subject_name):
     con.commit()
     con.close()
 
+
+def get_questions_based_on_lesson(selected_class, selected_subject, selected_lesson):
+    conn = sqlite3.connect('main.db')
+    cur = conn.cursor()
+    cur.execute('''
+        SELECT *
+        FROM questions
+        WHERE class = ? AND subject = ? AND chapter = ?
+    ''', (selected_class, selected_subject, selected_lesson))
+
+    questions = cur.fetchall()
+
+    conn.close()
+    return questions
+
+def get_file(file_id):
+    conn = sqlite3.connect('main.db')
+    cur = conn.cursor()
+    cur.execute("SELECT filepath FROM files WHERE id = ?", (file_id,))
+    file_data = cur.fetchone()
+
+    return file_data

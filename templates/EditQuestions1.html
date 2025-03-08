@@ -425,6 +425,7 @@
         <a href="/">Home</a>
         <a href="/AddQuestions">Add Questions</a>
         <a href="/EditQuestions">EditQuestions</a>
+        <a href="/view_questions">View Questions</a>
         <a href="/GenerateQuestion">Generate Paper</a>
         <a href="/GeneratedPapers">Question Papers</a>
         <a href="/edit_subjects">Edit Subjects</a>
@@ -477,6 +478,7 @@
                             <th>Diagram</th>
                             <th>Action</th>
                             <th>Delete</th>
+                            <th>File</th>
 
                         </tr>
                     </thead>
@@ -683,8 +685,17 @@
                 const result = await response.json();
                 alert(result.message || 'Question deleted successfully.');
                 
-                // Optionally, refresh or update the UI here
-                window.location.reload(); // Reload the page
+                
+                // Dynamically remove the deleted row using `data-id`
+                const rowToDelete = document.querySelector(`tr[data-id="${Id}"]`);
+                if (rowToDelete) {
+                    rowToDelete.remove();
+                }
+                else{
+                    // Optionally, refresh or update the UI here
+                    window.location.reload(); // Reload the page
+                }
+                
             } catch (error) {
                 console.error('Error deleting question:', error);
                 alert('An error occurred. Please try again.');
@@ -707,7 +718,7 @@
                 
 
                 // Loop through the questions and populate the questions table
-                questions.forEach(question => {
+                questions.forEach((question ,index) => {
                     const row = document.createElement('tr');
                     row.setAttribute('data-id', question.id); // Set the data-id attribute to identify the question
 
@@ -721,7 +732,7 @@
 
 
                     row.innerHTML = `
-                        <td>${question.id}</td>
+                        <td>${index + 1}</td>
                         <td>${question.class}</td>
                         <td>${question.subject}</td>
                         <td>${question.assessment}</td>
@@ -730,6 +741,7 @@
                         <td>${diagramCell}</td>
                         <td><button onclick="editQuestion(${question.id})" class="edit-btn">Edit</button></td>
                         <td><button onclick="deleteQuestion(${question.id})" class="delete-btn">Delete</button></td>
+                        <td><button onclick="viewPDF(${question.file_id})" class="view-pdf-btn">View</button></td>
 
                     `;
                     tableBody.appendChild(row);
@@ -739,6 +751,12 @@
                 alert('Failed to load questions. Please try again later.');
             }
         }
+
+        function viewPDF(fileId) {
+            window.open(`/getFile/${fileId}`, '_blank');
+        }
+
+
 
         async function getQuestionsBasedOnUserid() {
             try {
@@ -754,7 +772,7 @@
                 
 
                 // Loop through the questions and populate the questions table
-                questions.forEach(question => {
+                questions.forEach((question , index) => {
                     const row = document.createElement('tr');
                     row.setAttribute('data-id', question.id); // Set the data-id attribute to identify the question
 
@@ -768,7 +786,7 @@
 
 
                     row.innerHTML = `
-                        <td>${question.id}</td>
+                        <td>${index+1}</td>
                         <td>${question.class}</td>
                         <td>${question.subject}</td>
                         <td>${question.assessment}</td>

@@ -7,7 +7,7 @@ import pandas as pd
 from db import init_main_database , save_file_to_main_db , get_all_files_from_main_db, get_all_questions_based_on_fileid_from_main_db,update_question_in_db,check_question_exists_in_main_db,insert_single_question_to_main_db,insert_question_to_main_db,get_file_id_by_filename,delete_file_by_id ,get_all_questions_based_on_paperid_from_main_db
 from db import get_only_questions_based_on_fileid_from_main_db ,insert_chapters_to_main_db ,insert_academic_standard_to_main_db,get_dropdown_data,get_chapters , fetch_questions,distribute_questions_by_standard , insert_generatedpaper_to_main_db , insert_generatedquestion_to_main_db,get_all_papers_from_main_db ,replace_question_in_db,delete_generatedpaper_from_db,delete_questionpaper_from_db
 from db import get_teacherfeedback_from_main_db , insert_teacherfeedback,get_user_by_username,add_user,get_all_questions_based_on_userid_from_main_db,get_question_based_on_id_from_main_db ,delete_question_from_db,get_all_files_based_on_userid_from_main_db,get_all_questions_with_all_userids_from_main_db,get_all_papers_based_on_userid_from_main_db
-from db import get_all_users , add_admin_user,edit_user_based_on_id ,delete_user_based_on_id,get_user_by_id , get_files_uploaded_count , get_questionpapers_count,get_subjects_from_db,get_lessons_from_db ,return_count,get_lessons_from_db1,update_lesson_in_db,delete_lesson_from_db,add_lesson_to_db ,update_subject_in_db,delete_subject_from_db,add_subject_to_db
+from db import get_all_users , add_admin_user,edit_user_based_on_id ,delete_user_based_on_id,get_user_by_id , get_files_uploaded_count , get_questionpapers_count,get_subjects_from_db,get_lessons_from_db ,return_count,get_lessons_from_db1,update_lesson_in_db,delete_lesson_from_db,add_lesson_to_db ,update_subject_in_db,delete_subject_from_db,add_subject_to_db,get_questions_based_on_lesson,get_file
 import json
 import re
 from datetime import datetime
@@ -58,7 +58,7 @@ def configure_gemini():
 
 # Initialize with the first API key
 configure_gemini()
-model = genai.GenerativeModel('gemini-2.0-flash')
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 
 def switch_api_key():
@@ -261,6 +261,50 @@ def edit_subjects():
         return redirect(url_for('login'))
     return render_template('EditSubjects.html',role=role)
 
+
+@app.route('/view_questions')
+@role_required(['admin','teacher'])
+def view_questions():
+    role = session.get('role')  
+    if not role:  # Redirect to login if not authenticated
+        return redirect(url_for('login'))
+    return render_template('ViewQuestions.html',role=role)
+
+
+# Flask route for the API endpoint
+@app.route("/getQuestionsbasedonLesson", methods=["POST"])
+def get_questions_based_lesson():
+    data = request.json
+    selected_class = data.get("class")
+    selected_subject = data.get("subject")
+    selected_lesson = data.get("lesson")
+    print(data)
+    if not all([selected_class, selected_subject, selected_lesson]):
+        return jsonify({"error": "All fields are required"}), 400
+
+    try:
+        questions = get_questions_based_on_lesson(selected_class, selected_subject, selected_lesson)
+        print(questions)
+        questions_data = []
+        
+        for question in questions:
+            questions_data.append({
+                'id': question[0],
+                'class': question[1],
+                'subject': question[2],
+                'assessment': question[3],
+                'marks': question[4],
+                'question_text': question[6],
+                'diagram':question[7],
+                'file_id':question[9]
+            })
+        
+        print(questions_data)
+        
+        return jsonify(questions_data)  # Return questions as JSON
+    except Exception as e:
+        print(e)
+        return jsonify({'error': str(e)}), 500  # Handle unexpected error
 
 
 @app.route('/addTeachers')
@@ -894,11 +938,29 @@ def get_Questions_basedOn_Id(id):
         'lesson':questions[5],
         'question_text': questions[6],
         'diagram':questions[7],
-        'standard':questions[8]
+        'standard':questions[8],
+        'file_id':questions[9]
     })
     return jsonify(Question_data)  # Return as JSON
 
 
+@app.route('/getFile/<int:file_id>', methods=['GET'])
+def get_file1(file_id):
+    try:
+    
+        file_data = get_file(file_id)
+
+        if not file_data:
+            return jsonify({"error": "File not found"}), 404
+
+        file_path = file_data[0]
+
+        if os.path.exists(file_path):
+            return send_file(file_path, as_attachment=False)
+        else:
+            return jsonify({"error": "File path invalid or file missing"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/diagrams/<path:filename>')
@@ -924,7 +986,8 @@ def get_questions(file_id):
                 'assessment': question[3],
                 'marks': question[4],
                 'question_text': question[6],
-                'diagram':question[7]
+                'diagram':question[7],
+                'file_id':question[9]
             })
         
         return jsonify(questions_data)  # Return questions as JSON
