@@ -10,6 +10,7 @@ def insert_subjects(class_name , subject_name, lesson_name):
     query = "INSERT INTO subjects (class,subject_name, lesson_name) VALUES (?,?, ?)"
     cur.execute(query, (class_name, subject_name, lesson_name))
     conn.commit()
+    conn.close()
 
 
 def init_subjects():

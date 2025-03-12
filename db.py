@@ -516,31 +516,6 @@ def distribute_questions_by_standard(questions, standard_distribution, total_que
     return final_selection
 
 
-# def distribute_questions_by_standard(questions, standard_distribution, total_questions):
-#     """
-#     Distribute questions based on standard preferences or randomly if not specified.
-#     """
-#     grouped_questions = {}
-#     for question in questions:
-#         standard = question[4]
-#         if standard not in grouped_questions:
-#             grouped_questions[standard] = []
-#         grouped_questions[standard].append(question)
-
-#     selected_questions = []
-#     for standard, count in standard_distribution.items():
-#         if standard in grouped_questions:
-#             selected_questions.extend(grouped_questions[standard][:count])
-
-#     remaining_questions = [
-#         q for q in questions if q not in selected_questions
-#     ]
-#     if len(selected_questions) < int(total_questions):
-#         selected_questions.extend(remaining_questions[:len(total_questions) - len(selected_questions)])
-    
-#     return selected_questions
-
-
 
 def insert_generatedpaper_to_main_db(class_name, subject, assessment, sections, created_time,userid):
     conn = sqlite3.connect('main.db')
@@ -789,5 +764,6 @@ def get_file(file_id):
     cur = conn.cursor()
     cur.execute("SELECT filepath FROM files WHERE id = ?", (file_id,))
     file_data = cur.fetchone()
+    conn.close()
 
     return file_data
